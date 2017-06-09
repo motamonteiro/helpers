@@ -1,0 +1,17 @@
+{
+  "name": "motamonteiro/helpers",
+  "description": "Funções comuns que podem ser usadas em qualquer projeto PHP.",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Alexandre Mota Monteiro",
+      "email": "motamonteiro@gmail.com"
+    }
+  ],
+  "require": {},
+  "autoload": {
+    "psr-4": {
+      "MotaMonteiro\\Helpers\\":"src/"
+    }
+  }
+}
