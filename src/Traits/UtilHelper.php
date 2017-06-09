@@ -155,7 +155,7 @@ trait UtilHelper
     }
 
     /**
-     * Converter um numero de um formato '12345678.00' para um formato '12.345.678,00' com ou sem casas decimais de acordo com o número informado.
+     * Converter um numero de um formato '12345678.00' para um formato '12.345.678,00' com ou sem casas decimais.
      *
      * @param $numero
      * @return bool|string
@@ -170,7 +170,7 @@ trait UtilHelper
 
         //Se não tiver ponto
         if (strpos($numero, '.') === false) {
-            return (is_integer(intval($numero))) ? strval($numero) : false;
+            return (is_numeric($numero)) ? number_format($numero, 0, ",",".") : false;
         }
 
         return (is_numeric($numero)) ? number_format($numero, 2, ",",".") : false;
@@ -191,15 +191,43 @@ trait UtilHelper
         //Retira separador de milhar com a virgula
         $numero = str_replace(",", "", $numero);
 
-        //Se não tiver ponto
-        if (strpos($numero, '.') === false) {
-            return (is_integer(intval($numero))) ? number_format($numero, 2, ",",".") : false;
-        }
-
         return (is_numeric($numero)) ? number_format($numero, 2, ",",".") : false;
     }
 
+    /**
+     * Checar se um valor existe em um array multidimensional
+     *
+     * @param string $key
+     * @param string $value
+     * @param array $array
+     * @return bool
+     */
+    public function checarValorArrayMultidimensional($key, $value, array $array)
+    {
+        foreach ($array as $a) {
+            if (isset($a[$key]) && $a[$key] == $value) {
+                return true;
+            }
+        }
+        return false;
+    }
 
+    /**
+     * Setar chave do array caso não exista.
+     * Ex.: $array['chave'] = (isset($array['chave'])) ? $array['chave'] : '';
+     *
+     * @param array $array
+     * @param array $chaves
+     * @return array
+     */
+    function atribuirValorArray(array $array, array $chaves)
+    {
+        $results = [];
+        foreach ($chaves as $chave) {
+            $results[$chave] = (isset($array[$chave])) ? $array[$chave] : '';
+        }
+        return $results;
+    }
 
 
 
@@ -223,14 +251,6 @@ trait UtilHelper
     {
         return 'data:' . $type . ';base64,' . $file;
     }
-
-
-
-
-
-
-
-
 
 
 
@@ -362,16 +382,5 @@ trait UtilHelper
     }
 
 
-
-    public function in_array_multidimensional($value, $array, $key){
-        $flgFound = false;
-        foreach ($array as $a) {
-            if (isset($a[$key]) && $a[$key] == $value) {
-                $flgFound = true;
-                break;
-            }
-        }
-        return $flgFound;
-    }
 
 }
