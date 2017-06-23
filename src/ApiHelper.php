@@ -73,6 +73,24 @@ class ApiHelper
      */
     public function request($url, $method = 'GET', array $data = [], $tokenValue = '')
     {
+        $response = $this->requestCurl($url, $method, $data, $tokenValue);
+
+        if ($this->existsRequestError()) {
+            return $this->errorHelper;
+        }
+
+        return ['header_code' => $response['header_code'], 'json' => $response['json']];
+    }
+
+    /**
+     * @param $url
+     * @param string $method
+     * @param array $data
+     * @param string $tokenValue
+     * @return array|ErrorHelper
+     */
+    private function requestCurl($url, $method = 'GET', array $data = [], $tokenValue = '')
+    {
         $headerAuth = ($tokenValue != '') ? $this->tokenKey . " : " . $tokenValue : '';
         $headerPost = ($headerAuth != '') ? self::CONTENT_TYPE_JSON : '';
         $curl = curl_init();
@@ -108,14 +126,13 @@ class ApiHelper
         $header_code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
         curl_close($curl);
 
-        $json = $this->getJson($header_code, $dataCurl);
+        $json = $this->getJsonFromCurl($header_code, $dataCurl);
 
         if ($this->existsRequestError()) {
             return $this->errorHelper;
         }
 
         return ['header_code' => $header_code, 'json' => $json];
-
     }
 
     /**
@@ -139,7 +156,7 @@ class ApiHelper
      * @param $dataCurl
      * @return mixed|ErrorHelper
      */
-    private function getJson($headerCode, $dataCurl)
+    private function getJsonFromCurl($headerCode, $dataCurl)
     {
         $this->validateHeader($headerCode);
         if ($this->errorHelper->existsErrorHelper()) {
@@ -148,7 +165,7 @@ class ApiHelper
 
         $json = json_decode($dataCurl, true);
 
-        $this->validateJson();
+        $this->validateJson($headerCode, $dataCurl);
         if ($this->errorHelper->existsErrorHelper()) {
             return $this->errorHelper;
         }
@@ -158,18 +175,30 @@ class ApiHelper
 
     /**
      * @param $headerCode
+     * @return bool
      */
     private function validateHeader($headerCode)
     {
         if ($headerCode == 0) {
             $this->errorHelper->addMessage('server_error_header_0')->setStatusCode('500');
+            return false;
         }
+
+        return true;
     }
 
-    private function validateJson()
+    /**
+     * @return bool
+     */
+    private function validateJson($headerCode, $json)
     {
         if (json_last_error() != JSON_ERROR_NONE) {
-            $this->errorHelper->addMessage('server_error_converting_to_json')->setStatusCode('400');
+            $this->errorHelper->setStatusCode($headerCode);
+            $this->errorHelper->addMessage('server_error_converting_to_json');
+            $this->errorHelper->addMessage($json);
+            return false;
         }
+
+        return true;
     }
 }
