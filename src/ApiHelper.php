@@ -6,6 +6,8 @@ namespace MotaMonteiro\Helpers;
 class ApiHelper
 {
     const CONTENT_TYPE_JSON = 'Content-Type: application/json';
+    const HEADER_CODE = 'header_code';
+    const JSON = 'json';
 
     /**
      * @var string
@@ -79,7 +81,7 @@ class ApiHelper
             return $this->errorHelper;
         }
 
-        return ['header_code' => $response['header_code'], 'json' => $response['json']];
+        return [self::HEADER_CODE => $response[self::HEADER_CODE], self::JSON => $response[self::JSON]];
     }
 
     /**
@@ -132,7 +134,7 @@ class ApiHelper
             return $this->errorHelper;
         }
 
-        return ['header_code' => $header_code, 'json' => $json];
+        return [self::HEADER_CODE => $header_code, self::JSON => $json];
     }
 
     /**
