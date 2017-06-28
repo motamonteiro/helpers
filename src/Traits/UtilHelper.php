@@ -7,19 +7,16 @@ trait UtilHelper
 {
     use DataHelper;
 
+
     /**
      * Validar se o e-mail é válido ou não.
      *
-     * @param string $email
+     * @param $email
      * @return bool
      */
     public function validarEmail($email)
     {
-        if (preg_match("/^([[:alnum:]_.-]){3,}@([[:lower:][:digit:]_.-]{3,})(\.[[:lower:]]{2,3})(\.[[:lower:]]{2})?$/", $email)) {
-            return true;
-        } else {
-            return false;
-        }
+        return (preg_match("/^([[:alnum:]_.-]){3,}@([[:lower:][:digit:]_.-]{3,})(\.[[:lower:]]{2,3})(\.[[:lower:]]{2})?$/", $email) == 1);
     }
 
     /**
