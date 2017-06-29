@@ -11,11 +11,11 @@ $resposta = $api->request('http://localhost:8001/api/login', 'POST', $data, 'f9d
 if ($api->existsRequestError()) {
     $error = $api->getRequestErrorArray();
 
-    if ($error['statusCode'] == 500) {
+    if ($error['status_code'] == 500) {
         echo 'send  mail to server responsable<br>';
     } else {
         echo 'send  mail to api responsable<br>';
-        echo $error['statusCode'] . '<br>';
+        echo $error['status_code'] . '<br>';
         echo $error['messages'][1];
     }
     exit;

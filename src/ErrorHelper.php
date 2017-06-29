@@ -5,8 +5,17 @@ namespace MotaMonteiro\Helpers;
 
 class ErrorHelper
 {
+    const STATUS_CODE = 'status_code';
+    const ERROR = 'error';
+    const MESSAGES = 'messages';
 
+    /**
+     * @var string
+     */
     protected $statusCode;
+    /**
+     * @var array
+     */
     protected $messages;
 
     public function __construct()
@@ -65,7 +74,7 @@ class ErrorHelper
      */
     public function getArrayErrorHelper(): array
     {
-        return ['statusCode' => $this->statusCode, 'error' => true, 'messages' => $this->messages];
+        return [self::STATUS_CODE => $this->statusCode, self::ERROR => true, self::MESSAGES => $this->messages];
     }
 
 }
