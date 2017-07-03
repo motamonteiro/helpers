@@ -9,6 +9,18 @@ trait UtilHelper
 
 
     /**
+     * Retprnar somente os números de uma determinada string
+     *
+     * @param $string
+     * @return mixed
+     */
+    public function somenteNumeros($string)
+    {
+        return preg_replace('/[^0-9]/', '', (string)$string);
+    }
+
+
+    /**
      * Validar se o e-mail é válido ou não.
      *
      * @param $email
@@ -16,7 +28,8 @@ trait UtilHelper
      */
     public function validarEmail($email)
     {
-        return (preg_match("/^([[:alnum:]_.-]){3,}@([[:lower:][:digit:]_.-]{3,})(\.[[:lower:]]{2,3})(\.[[:lower:]]{2})?$/", $email) == 1);
+        return (preg_match("/^([[:alnum:]_.-]){3,}@([[:lower:][:digit:]_.-]{3,})(\.[[:lower:]]{2,3})(\.[[:lower:]]{2})?$/",
+                $email) == 1);
     }
 
     /**
@@ -28,7 +41,7 @@ trait UtilHelper
     public function validarCpf($cpf)
     {
         //Retira possível mascara
-        $cpf = preg_replace('/[^0-9]/', '', (string) $cpf);
+        $cpf = $this->somenteNumeros($cpf);
 
         //Valida tamanho
         if (strlen($cpf) != 11) {
@@ -36,7 +49,7 @@ trait UtilHelper
         }
 
         //Valida números iguais
-        for ($i = 0; $i <= 10; $i++) {
+        for ($i = 0; $i < 10; $i++) {
             if ($cpf == str_repeat($i, 11)) {
                 return false;
             }
@@ -70,7 +83,7 @@ trait UtilHelper
     public function validarCnpj($cnpj)
     {
         //Retira possível mascara
-        $cnpj = preg_replace('/[^0-9]/', '', (string) $cnpj);
+        $cnpj = $this->somenteNumeros($cnpj);
 
         //Valida tamanho
         if (strlen($cnpj) != 11) {
@@ -96,8 +109,7 @@ trait UtilHelper
         }
 
         //Segundo dígito verificador
-        for ($i = 0, $j = 6, $soma = 0; $i < 13; $i++)
-        {
+        for ($i = 0, $j = 6, $soma = 0; $i < 13; $i++) {
             $soma += $cnpj{$i} * $j;
             $j = ($j == 2) ? 9 : $j - 1;
         }
@@ -115,7 +127,7 @@ trait UtilHelper
     public function validarIe($inscricaoEstadual)
     {
         //Retira possível mascara
-        $inscricaoEstadual = preg_replace('/[^0-9]/', '', (string) $inscricaoEstadual);
+        $inscricaoEstadual = $this->somenteNumeros($inscricaoEstadual);
 
         //Valida tamanho
         if (strlen($inscricaoEstadual) != 9) {
@@ -167,10 +179,10 @@ trait UtilHelper
 
         //Se não tiver ponto
         if (strpos($numero, '.') === false) {
-            return (is_numeric($numero)) ? number_format($numero, 0, ",",".") : false;
+            return (is_numeric($numero)) ? number_format($numero, 0, ",", ".") : false;
         }
 
-        return (is_numeric($numero)) ? number_format($numero, 2, ",",".") : false;
+        return (is_numeric($numero)) ? number_format($numero, 2, ",", ".") : false;
     }
 
 
@@ -188,7 +200,29 @@ trait UtilHelper
         //Retira separador de milhar com a virgula
         $numero = str_replace(",", "", $numero);
 
-        return (is_numeric($numero)) ? number_format($numero, 2, ",",".") : false;
+        return (is_numeric($numero)) ? number_format($numero, 2, ",", ".") : false;
+    }
+
+    /**
+     * Converter um numero de um formato '2345678,00' para um formato '12.345.678,00' sempre com casas decimais.
+     *
+     * @param string $numero
+     * @return bool|mixed
+     */
+    public function numeroFormatoBrParaMoedaBr($numero)
+    {
+
+        //Retira espaços
+        $numero = trim($numero);
+
+        //Retira separador de milhar com a virgula
+        $numero = str_replace(".", "", $numero);
+
+        //transforma para numero
+        $numero = str_replace(",", ".", $numero);
+
+        return (is_numeric($numero)) ? number_format($numero, 2, ",", ".") : false;
+
     }
 
     /**
@@ -226,19 +260,134 @@ trait UtilHelper
         return $results;
     }
 
+    /**
+     * @param string $valor
+     * @param string $formato
+     * @return string string
+     */
+    function mascararValorPorFormato($valor, $formato)
+    {
+        $tamanhoValor = strlen($valor);
+        $tamanhoFormato = substr_count($formato, '#');
 
+        if ($tamanhoValor < $tamanhoFormato) {
+            $diferenca = $tamanhoFormato - $tamanhoValor;
+            $valor = $valor . str_repeat('#', $diferenca);
+        }
 
+        if ($tamanhoValor > $tamanhoFormato) {
+            $valor = substr($valor, 0, $tamanhoFormato);
+        }
 
+        $formato = str_replace('#', '%s', $formato);
+        return vsprintf($formato, str_split($valor));
+    }
 
+    /**
+     * @param $valor
+     * @return string
+     */
+    function mascararCpf($valor)
+    {
+        return $this->mascararValorPorFormato($valor, '###.###.###-##');
+    }
 
+    /**
+     * @param $valor
+     * @return string
+     */
+    function mascararCnpj($valor)
+    {
+        return $this->mascararValorPorFormato($valor, '##.###.###/####-##');
+    }
 
+    /**
+     * @param $valor
+     * @return string
+     */
+    function mascararIe($valor)
+    {
+        return $this->mascararValorPorFormato($valor, '###.###.##-#');
+    }
 
+    /**
+     * @param $valor
+     * @return string
+     */
+    function mascararIeCpfCnpj($valor)
+    {
+        if (strlen($valor) == 9) {
+            return $this->mascararIe($valor);
+        }
 
+        if (strlen($valor) == 11) {
+            return $this->mascararCpf($valor);
+        }
 
+        return $this->mascararCnpj($valor);
+    }
 
+    /**
+     * @param $valor
+     * @return string
+     */
+    function mascararTelefone($valor)
+    {
+        if (strlen($valor) < 10) {
+            return $this->mascararValorPorFormato($valor, '####-####');
+        }
 
+        if (strlen($valor) == 10) {
+            return $this->mascararValorPorFormato($valor, '(##) ####-####');
+        }
 
+        return $this->mascararValorPorFormato($valor, '(##) #####-####');
+    }
 
+    /**
+     * @param $valor
+     * @return string
+     */
+    function mascararMesAnoFormatoBr($valor)
+    {
+        return $this->mascararValorPorFormato($valor, '##/####');
+    }
+
+    /**
+     * @param $valor
+     * @return string
+     */
+    function mascararDataFormatoBr($valor)
+    {
+        return $this->mascararValorPorFormato($valor, '##/##/####');
+    }
+
+    /**
+     * @param $valor
+     * @return string
+     */
+    function mascararDataHoraFormatoBr($valor)
+    {
+        return $this->mascararValorPorFormato($valor, '##/##/#### ##:##:##');
+    }
+
+    /**
+     * @param $valor
+     * @return string
+     */
+    function mascararCep($valor)
+    {
+        return $this->mascararValorPorFormato($valor, '#####-###');
+    }
+
+    /**
+     * @param $valor
+     * @return string
+     */
+    function mascararPlaca($valor)
+    {
+        return $this->mascararValorPorFormato($valor, '###-####');
+    }
 
     /**
      * Html
@@ -248,136 +397,5 @@ trait UtilHelper
     {
         return 'data:' . $type . ';base64,' . $file;
     }
-
-
-
-    /**
-     * Função para formatar o valor de acordo com a mascara passada.
-     * @param string $valor Valor a ser formatado.
-     * @param string $mascara Nome da formatacao que sera aplicada. Valores validos: "moeda", "inteiro", "cpf", "telefone", "telefoneSimples", "data", "referencia", "cep" e "placa".
-     * @return string Retorna o valor formatado de acordo com a mascara.
-     * @author by Alexandre Mota Monteiro
-     * @version 16/09/2013 13:00
-     */
-    public function mascara($valor, $mascara) {
-
-        if(trim($valor) == '') return '';
-
-        $nmeMascara = $mascara;
-        switch ($mascara) {
-            case "moeda":
-                $valor = str_replace(".", ",", $valor);
-                $valor = str_replace(",", ".", $valor);
-                if (($valor != "") && (is_numeric($valor))) {
-                    return number_format($valor, 2, ",",".");
-                } else {
-                    return "Valor vazio ou não numérico";
-                }
-                break;
-            case "vrte":
-                $valor = str_replace(".", ",", $valor);
-                $valor = str_replace(",", ".", $valor);
-                if (($valor != "") && (is_numeric($valor))) {
-                    return number_format($valor, 4, ",",".");
-                } else {
-                    return "Valor vazio ou não numérico";
-                }
-                break;
-            case "inteiro":
-                if (($valor != "") && (is_numeric($valor))) {
-                    return number_format($valor, 0, ",",".");
-                } else {
-                    return "Valor vazio ou não numérico";
-                }
-                break;
-            case "inteiroK":
-                if (($valor != "") && (is_numeric($valor))) {
-
-                    if ($valor > 10000) {
-                        $valor = round($valor/1000, 1). "K";
-                    }
-
-                    return $valor;
-                } else {
-                    return "Valor vazio ou não numérico";
-                }
-                break;
-            case "ieCpfCnpj":
-                $valor = limparMascara($valor);
-                if (validarCpf($valor)) {
-                    $mascara = "###.###.###-##";
-                }elseif (validarCnpj($valor)) {
-                    $mascara = "##.###.###/####-##";
-                } else {
-                    $mascara = "###.###.##-#";
-                }
-                break;
-            case "cpf":
-                $mascara = "###.###.###-##";
-                break;
-            case "cnpj":
-                $mascara = "##.###.###/####-##";
-                break;
-            case "ie":
-                $mascara = "###.###.##-#";
-                break;
-            case "telefone":
-                $mascara = "(##)####-####";
-                break;
-            case "telefoneSimples":
-                $mascara = "####-####";
-                break;
-            case "data":
-                $mascara = "##/##/####";
-                break;
-            case "referencia":
-                $mascara = "##/####";
-                break;
-            case "cep":
-                $mascara = "#####-###";
-                break;
-            case "placa":
-                $mascara = "###-####";
-                break;
-        }
-
-        //Verifica se o número de caracteres do valor é igual ao numero de caracteres da mascara.
-        if (strlen($valor) != substr_count($mascara, "#")) {
-            return "Tamanho(". strlen($valor) .") invalido para a máscara ".$nmeMascara." escolhida(". substr_count($mascara, "#") .").";
-        }
-        $j = 0;
-        $valorFormatado = "";
-        for ($i = 0; $i < strlen($mascara); $i++) {
-            if (substr($mascara, $i, 1) == "#") {
-                $valorFormatado .= substr($valor, $j, 1);
-                $j++;
-            } else {
-                $valorFormatado .= substr($mascara, $i, 1);
-            }
-        }
-        $valorFormatado = strtoupper($valorFormatado);
-        return $valorFormatado;
-    }
-
-    /**
-     * Função para limpar as mascaras inseridas pela funcao "mascara($valor, $mascara)".
-     * @param string $valorFormatado Valor formatado.
-     * @return string Retorna o valor sem a nenhum caracter utulizado na funcao mascara: ".", "-", "/", "(", ")"
-     * @author by Alexandre Mota Monteiro
-     * @version 16/09/2013 13:00
-     */
-    public function limparMascara($valorFormatado) {
-
-        $valor = $valorFormatado;
-        $valor = str_replace(".", "", $valor);
-        $valor = str_replace("-", "", $valor);
-        $valor = str_replace("(", "", $valor);
-        $valor = str_replace(")", "", $valor);
-        $valor = str_replace("/", "", $valor);
-
-        return $valor;
-    }
-
-
 
 }

@@ -5,10 +5,10 @@ namespace MotaMonteiro\Helpers\Traits;
 
 trait DataHelper
 {
-    private $FORMATO_DATA_BR = 'd/m/Y';
-    private $FORMATO_DATA_HORA_BR = 'd/m/Y H:i:s';
-    private $FORMATO_DATA_HORA_SQL = 'Y-m-d H:i:s';
-    private $DATA_HORA_SQL_SEM_FORMATO = 'YmdHis';
+    public $FORMATO_DATA_BR = 'd/m/Y';
+    public $FORMATO_DATA_HORA_BR = 'd/m/Y H:i:s';
+    public $FORMATO_DATA_HORA_SQL = 'Y-m-d H:i:s';
+    public $DATA_HORA_SQL_SEM_FORMATO = 'YmdHis';
 
     /**
      * Validar se uma data no formato 'd/m/Y' é válida ou nao.
