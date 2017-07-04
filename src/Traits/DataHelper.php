@@ -224,14 +224,14 @@ trait DataHelper
     }
 
     /**
-     *  Comparar duas datas no formato 'd/m/Y' de acordo com o simbolo informado ('==', '<', '>', '<=', '>=').
+     * Comparar duas datas no formato 'd/m/Y' de acordo com o simbolo informado ('==', '<', '>', '<=', '>=').
      *
      * @param \DateTime|string $data1
      * @param string $simbolo
      * @param \DateTime|string $data2
      * @return bool
      */
-    public function compararDatasFormatoBr($data1, $simbolo, $data2)
+    public function compararDataFormatoBr($data1, $simbolo, $data2)
     {
 
         $data1 = (!$data1 instanceof \DateTime) ? \DateTime::createFromFormat($this->FORMATO_DATA_BR, $data1) : $data1;
@@ -246,14 +246,14 @@ trait DataHelper
     }
 
     /**
-     *  Comparar duas datas no formato 'd/m/Y H:i:s' de acordo com o simbolo informado ('==', '<', '>', '<=', '>=').
+     * Comparar duas datas no formato 'd/m/Y H:i:s' de acordo com o simbolo informado ('==', '<', '>', '<=', '>=').
      *
      * @param \DateTime|string $data1
      * @param string $simbolo
      * @param \DateTime|string $data2
      * @return bool
      */
-    public function compararDatasHoraFormatoBr($data1, $simbolo, $data2)
+    public function compararDataHoraFormatoBr($data1, $simbolo, $data2)
     {
 
         $data1 = (!$data1 instanceof \DateTime) ? \DateTime::createFromFormat($this->FORMATO_DATA_HORA_BR, $data1) : $data1;
