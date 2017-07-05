@@ -6,9 +6,16 @@
     {
       "name": "Alexandre Mota Monteiro",
       "email": "motamonteiro@gmail.com"
+    },
+    {
+      "name": "Pablo Bozzi",
+      "email": "pablobozzi@gmail.com"
     }
   ],
   "require": {},
+  "require-dev": {
+    "phpunit/phpunit": "^5.7"
+  },
   "autoload": {
     "psr-4": {
       "MotaMonteiro\\Helpers\\":"src/"
