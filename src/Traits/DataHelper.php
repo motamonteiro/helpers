@@ -204,7 +204,7 @@ trait DataHelper
 
         $data = (!$data instanceof \DateTime) ? \DateTime::createFromFormat($this->FORMATO_DATA_HORA_BR, $data) : $data;
 
-        if (!$data || $data->format($this->FORMATO_DATA_HORA_BR)) {
+        if (!$data || !$data->format($this->FORMATO_DATA_HORA_BR)) {
             return '01/01/1900 00:00:00';
         }
 
