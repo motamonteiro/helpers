@@ -41,4 +41,11 @@ class TraitStringHelperValidaCnpjTest extends TestCase
 
         $this->assertFalse($this->validarCnpj($cnpj));
     }
+
+    public function testValidaCnpjStringVazia()
+    {
+        $cnpj = '';
+
+        $this->assertFalse($this->validarCnpj($cnpj));
+    }
 }
