@@ -36,38 +36,26 @@ trait StringHelper
      */
     public function validarCpf($cpf)
     {
-        //Retira possível mascara
         $cpf = $this->filtrarSomenteNumeros($cpf);
 
-        //Valida tamanho
-        if (strlen($cpf) != 11) {
+        // Remove os CPFs 00000000000, 11111111111, ..., 99999999999
+        if ((strlen($cpf) != 11) || (preg_match('/(\d)\1{10}/', $cpf))) {
             return false;
         }
-
-        //Valida números iguais
-        for ($i = 0; $i < 10; $i++) {
-            if ($cpf == str_repeat($i, 11)) {
+        
+        // Calcula os DVs para verificar se o CPF é verdadeiro
+        for ($i = 9; $i < 11; $i++) {
+            $j = 0;
+            for ($k = 0; $k < $i; $k++) {
+                $j += $cpf{$k} * (($i + 1) - $k);
+            }
+            $j = ((10 * $j) % 11) % 10;
+            if ($cpf{$k} != $j) {
                 return false;
             }
         }
 
-        //Primeiro dígito verificador
-        for ($i = 0, $j = 10, $soma = 0; $i < 9; $i++, $j--) {
-            $soma += $cpf{$i} * $j;
-        }
-
-        $resto = $soma % 11;
-        if ($cpf{9} != ($resto < 2 ? 0 : 11 - $resto)) {
-            return false;
-        }
-
-        //Segundo dígito verificador
-        for ($i = 0, $j = 11, $soma = 0; $i < 10; $i++, $j--) {
-            $soma += $cpf{$i} * $j;
-        }
-
-        $resto = $soma % 11;
-        return $cpf{10} == ($resto < 2 ? 0 : 11 - $resto);
+        return true;
     }
 
     /**
@@ -78,23 +66,17 @@ trait StringHelper
      */
     public function validarCnpj($cnpj)
     {
-        //Retira possível mascara
         $cnpj = $this->filtrarSomenteNumeros($cnpj);
 
-        //Valida tamanho
-        if (strlen($cnpj) != 11) {
+        // Remove os CNPJs 00000000000000, 11111111111111, ..., 99999999999999
+        if ((strlen($cnpj) != 14) || (preg_match('/(\d)\1{13}/', $cnpj))) {
             return false;
         }
 
-        //Valida números iguais
-        for ($i = 0; $i <= 10; $i++) {
-            if ($cnpj == str_repeat($i, 14)) {
-                return false;
-            }
-        }
-
         //Primeiro dígito verificador
-        for ($i = 0, $j = 5, $soma = 0; $i < 12; $i++) {
+        $soma = 0;
+        $j = 5;
+        for ($i = 0; $i < 12; $i++) {
             $soma += $cnpj{$i} * $j;
             $j = ($j == 2) ? 9 : $j - 1;
         }
@@ -105,12 +87,15 @@ trait StringHelper
         }
 
         //Segundo dígito verificador
-        for ($i = 0, $j = 6, $soma = 0; $i < 13; $i++) {
+        $soma = 0;
+        $j = 6;
+        for ($i = 0; $i < 13; $i++) {
             $soma += $cnpj{$i} * $j;
             $j = ($j == 2) ? 9 : $j - 1;
         }
 
         $resto = $soma % 11;
+
         return $cnpj{13} == ($resto < 2 ? 0 : 11 - $resto);
     }
 
@@ -171,13 +156,16 @@ trait StringHelper
 
         //Retira separador de milhar com a virgula
         $numero = str_replace(",", "", $numero);
+        if (!is_numeric($numero)) {
+            return false;
+        }
 
         //Se não tiver ponto
         if (strpos($numero, '.') === false) {
-            return (is_numeric($numero)) ? number_format($numero, 0, ",", ".") : false;
+            return number_format($numero, 0, ",", ".");
         }
 
-        return (is_numeric($numero)) ? number_format($numero, 2, ",", ".") : false;
+        return number_format($numero, 2, ",", ".");
     }
 
     /**
@@ -194,7 +182,11 @@ trait StringHelper
         //Retira separador de milhar com a virgula
         $numero = str_replace(",", "", $numero);
 
-        return (is_numeric($numero)) ? number_format($numero, 2, ",", ".") : false;
+        if(!is_numeric($numero)){
+            return false;
+        }
+
+        return number_format($numero, 2, ",", ".");
     }
 
     /**
@@ -214,7 +206,10 @@ trait StringHelper
         //transforma para numero
         $numero = str_replace(",", ".", $numero);
 
-        return (is_numeric($numero)) ? number_format($numero, 2, ",", ".") : false;
+        if(!is_numeric($numero)){
+            return false;
+        }
+        return number_format($numero, 2, ",", ".");
     }
 
     /**
