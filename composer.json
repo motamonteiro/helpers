@@ -1,6 +1,6 @@
 {
   "name": "motamonteiro/helpers",
-  "description": "Funções comuns que podem ser usadas em qualquer projeto PHP.",
+  "description": "Funções comuns que podem ser usadas em qualquer projeto PHP 7.",
   "license": "MIT",
   "authors": [
     {
