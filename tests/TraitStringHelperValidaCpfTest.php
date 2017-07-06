@@ -41,4 +41,11 @@ class TraitStringHelperValidaCpfTest extends TestCase
 
         $this->assertFalse($this->validarCpf($cpf));
     }
+
+    public function testValidaCpfStringVazia()
+    {
+        $cpf = '';
+
+        $this->assertFalse($this->validarCpf($cpf));
+    }
 }
