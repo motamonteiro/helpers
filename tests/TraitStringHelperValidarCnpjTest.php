@@ -3,46 +3,46 @@
 use MotaMonteiro\Helpers\Traits\StringHelper;
 use PHPUnit\Framework\TestCase;
 
-class TraitStringHelperValidaCnpjTest extends TestCase
+class TraitStringHelperValidarCnpjTest extends TestCase
 {
     use StringHelper;
 
-    public function testValidaCnpjSucesso()
+    public function testValidarCnpjSucesso()
     {
         $cnpj = '74456225000193';
 
         $this->assertTrue($this->validarCnpj($cnpj));
     }
 
-    public function testValidaCnpjComMascara()
+    public function testValidarCnpjComMascara()
     {
         $cnpj = '74.456.225/0001-93';
 
         $this->assertTrue($this->validarCnpj($cnpj));
     }
 
-    public function testValidaCnpjQtdeDigitosInvalida()
+    public function testValidarCnpjQtdeDigitosInvalida()
     {
         $cnpj = '0000000000000';
 
         $this->assertFalse($this->validarCnpj($cnpj));
     }
 
-    public function testValidaCnpjDigitosIguais()
+    public function testValidarCnpjDigitosIguais()
     {
         $cnpj = '00000000000000';
 
         $this->assertFalse($this->validarCnpj($cnpj));
     }
 
-    public function testValidaCnpjCaracteresInvalidos()
+    public function testValidarCnpjCaracteresInvalidos()
     {
         $cnpj = 'a';
 
         $this->assertFalse($this->validarCnpj($cnpj));
     }
 
-    public function testValidaCnpjStringVazia()
+    public function testValidarCnpjStringVazia()
     {
         $cnpj = '';
 
