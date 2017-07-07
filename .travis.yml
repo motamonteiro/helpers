@@ -17,5 +17,5 @@ before_script:
 
 script: vendor/bin/phpunit --color --coverage-clover ./tests/logs/clover.xml tests
 
-#after_success:
-#  - travis_retry php vendor/bin/coveralls -v
+after_success:
+  - travis_retry php vendor/bin/coveralls -v
