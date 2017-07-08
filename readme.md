@@ -1,3 +1,9 @@
+[![Build Status](https://travis-ci.org/motamonteiro/helpers.svg?branch=master)](https://travis-ci.org/motamonteiro/helpers)
+[![Coverage Status](https://coveralls.io/repos/github/motamonteiro/helpers/badge.svg)](https://coveralls.io/github/motamonteiro/helpers)
+[![Total Downloads](https://poser.pugx.org/motamonteiro/helpers/downloads)](https://packagist.org/packages/motamonteiro/helpers)
+[![Latest Stable Version](https://poser.pugx.org/motamonteiro/helpers/v/stable)](https://packagist.org/packages/motamonteiro/helpers)
+[![License](https://poser.pugx.org/motamonteiro/helpers/license)](https://packagist.org/packages/motamonteiro/helpers)
+
 # helpers
 
 O pacote helpers disponibiliza funcionalidades comuns que podem ser usadas em qualquer projeto PHP.

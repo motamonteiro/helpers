@@ -1,6 +1,6 @@
 {
   "name": "motamonteiro/helpers",
-  "description": "Funções comuns que podem ser usadas em qualquer projeto PHP.",
+  "description": "Funções comuns que podem ser usadas em qualquer projeto PHP 7.",
   "license": "MIT",
   "authors": [
     {
@@ -10,7 +10,8 @@
   ],
   "require": {},
   "require-dev": {
-    "phpunit/phpunit": "^5.7"
+    "phpunit/phpunit": "^5.7",
+    "satooshi/php-coveralls": "^1.0"
   },
   "autoload": {
     "psr-4": {
