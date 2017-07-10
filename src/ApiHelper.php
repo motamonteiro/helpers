@@ -18,6 +18,10 @@ class ApiHelper
      */
     private $tokenKey;
     /**
+     * @var string
+     */
+    private $tokenValue;
+    /**
      * @var ErrorHelper
      */
     private $errorHelper;
@@ -26,11 +30,13 @@ class ApiHelper
      * ApiHelper constructor.
      * @param string $baseUrl
      * @param string $tokenKey
+     * @param string $tokenValue
      */
-    public function __construct($baseUrl = '', $tokenKey = '')
+    public function __construct($baseUrl = '', $tokenKey = '', $tokenValue = '')
     {
         $this->baseUrl = $baseUrl;
         $this->tokenKey = $tokenKey;
+        $this->tokenValue = $tokenValue;
         $this->errorHelper = new ErrorHelper();
     }
 
@@ -67,15 +73,31 @@ class ApiHelper
     }
 
     /**
+     * @return string
+     */
+    public function getTokenValue(): string
+    {
+        return $this->tokenValue;
+    }
+
+    /**
+     * @param string $tokenValue
+     */
+    public function setTokenValue(string $tokenValue)
+    {
+        $this->tokenValue = $tokenValue;
+    }
+
+    /**
      * @param $url
      * @param string $method
      * @param array $data
-     * @param string $tokenValue
-     * @return ErrorHelper|array
+     * @return array|ErrorHelper
      */
-    public function request($url, $method = 'GET', array $data = [], $tokenValue = '')
+    public function request($url, $method = 'GET', array $data = [])
     {
-        $response = $this->requestCurl($url, $method, $data, $tokenValue);
+        $url = ($this->baseUrl != '') ? $this->baseUrl . $url : $url;
+        $response = $this->requestCurl($url, $method, $data);
 
         if ($this->existsRequestError()) {
             return $this->errorHelper;
@@ -88,12 +110,11 @@ class ApiHelper
      * @param $url
      * @param string $method
      * @param array $data
-     * @param string $tokenValue
      * @return array|ErrorHelper
      */
-    private function requestCurl($url, $method = 'GET', array $data = [], $tokenValue = '')
+    private function requestCurl($url, $method = 'GET', array $data = [])
     {
-        $headerAuth = ($tokenValue != '') ? $this->tokenKey . " : " . $tokenValue : '';
+        $headerAuth = ($this->tokenValue != '') ? $this->tokenKey . " : " . $this->tokenValue : '';
         $headerPost = ($headerAuth != '') ? self::CONTENT_TYPE_JSON : '';
         $curl = curl_init();
 
