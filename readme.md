@@ -6,41 +6,43 @@
 
 # helpers
 
-O pacote helpers disponibiliza funcionalidades comuns que podem ser usadas em qualquer projeto PHP.
+O pacote helpers disponibiliza funcionalidades comuns que podem ser usadas em qualquer projeto PHP 7.
 
-Existem 2 maneiras de se usar esse pacote:
-
-## Instalação 1 - `traits`
+## Instalação
 
 ```sh
-$ composer require MotaMonteiro/helpers
+$ composer require motamonteiro/helpers
 
 ```
 
+## Utilização com  `traits`
+
 ```php
-use MotaMonteiro\Helpers\Traits\StringHelper;
+use MotaMonteiro\Helpers\Traits\UtilHelper;
  
 class MyClass
 {
-    use StringHelper;
+    use UtilHelper;
     
     public function myFunction()
     {
         $cpf = '43354377224';
-        if ($this->validarCpf($cpf))
-        {
+        if ($this->validarCpf($cpf)) {
+            ...
+        }
+    }
+    
+    public function myOtherFunction()
+    {
+        $data = '21/10/1982';
+        if ($this->validarDataFormatoBr($data)) {
             ...
         }
     }
 }
 ```
 
-## Instalação 2 - `functions`
-
-```sh
-$ composer require MotaMonteiro/helpers
-
-```
+## Utilização com `classes`
 
 ```php
 use MotaMonteiro\Helpers\UtilHelper;
@@ -72,22 +74,23 @@ Exemplo de saída:
 
 ```
 PHPUnit 5.7.21 by Sebastian Bergmann and contributors.
- 
-Runtime:       PHP 7.0.15 with Xdebug 2.5.0
-Configuration: /Users/pablo/Documents/repositorios/github/fork/helpers/phpunit.xml
- 
-..........                                                        10 / 10 (100%)
- 
-Time: 401 ms, Memory: 6.00MB
- 
-OK (10 tests, 10 assertions)
- 
+
+Runtime:       PHP 7.1.6 with Xdebug 2.5.4
+Configuration: /Users/alexandre/Documents/github/motamonteiro/helpers/phpunit.xml
+
+..........................                                        26 / 26 (100%)
+
+Time: 411 ms, Memory: 6.00MB
+
+OK (26 tests, 26 assertions)
+
 Generating code coverage report in Clover XML format ... done
+
 ```
 
 ## Package
 
-https://packagist.org/packages/MotaMonteiro/helpers
+https://packagist.org/packages/motamonteiro/helpers
 
 ## Licença
 
