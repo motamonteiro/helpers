@@ -14,6 +14,13 @@ class TraitStringHelperValidarCnpjTest extends TestCase
         $this->assertTrue($this->validarCnpj($cnpj));
     }
 
+    public function testValidarCnpjInvalido()
+    {
+        $cnpj = '14456225000193';
+
+        $this->assertFalse($this->validarCnpj($cnpj));
+    }
+
     public function testValidarCnpjComMascara()
     {
         $cnpj = '74.456.225/0001-93';
