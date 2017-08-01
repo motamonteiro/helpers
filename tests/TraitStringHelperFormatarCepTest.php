@@ -3,27 +3,27 @@
 use MotaMonteiro\Helpers\Traits\StringHelper;
 use PHPUnit\Framework\TestCase;
 
-class TraitStringHelperFormatarValorTest extends TestCase
+class TraitStringHelperFormatarCepTest extends TestCase
 {
     use StringHelper;
 
     public function testFormatarValorSucesso()
     {
-        $this->assertEquals($this->formatarValor('123456', '###.###'), '123.456');
+        $this->assertEquals($this->formatarCep('01234567'), '01234-567');
     }
 
     public function testFormatarTamanhoValorMenorQueTamanhoFormato()
     {
-        $this->assertEquals($this->formatarValor('12345', '###.###'), '123.45#');
+        $this->assertEquals($this->formatarCep('0123'), '0123#-###');
     }
 
     public function testFormatarTamanhoValorMaiorQueTamanhoFormato()
     {
-        $this->assertEquals($this->formatarValor('1234567', '###.###'), '123.456');
+        $this->assertEquals($this->formatarCep('01234567890'), '01234-567');
     }
 
     public function testFormatarValorVazio()
     {
-        $this->assertEquals($this->formatarValor('', '###.###'), '###.###');
+        $this->assertEquals($this->formatarCep(''), '#####-###');
     }
 }
