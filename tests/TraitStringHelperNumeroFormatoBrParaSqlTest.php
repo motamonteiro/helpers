@@ -14,7 +14,7 @@ class TraitStringHelperNumeroFormatoBrParaSqlTest extends TestCase
 
     public function testNumeroComCasaDeMilharSemCasaDecimal()
     {
-        $this->assertTrue($this->numeroFormatoBrParaSql('12.345.678') === '12345678');
+        $this->assertTrue($this->numeroFormatoBrParaSql('012.345.678') === '012345678');
     }
 
     public function testNumeroSemCasaDeMilharComCasaDecimal()

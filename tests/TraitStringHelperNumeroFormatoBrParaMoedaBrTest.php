@@ -9,7 +9,7 @@ class TraitStringHelperNumeroFormatoBrParaMoedaBrTest extends TestCase
 
     public function testNumeroComCasaDeMilharComCasaDecimal()
     {
-        $this->assertTrue($this->numeroFormatoBrParaMoedaBr('12.345.678,00') === '12.345.678,00');
+        $this->assertTrue($this->numeroFormatoBrParaMoedaBr('12.345.678,01') === '12.345.678,01');
     }
 
     public function testNumeroComCasaDeMilharSemCasaDecimal()
@@ -19,7 +19,7 @@ class TraitStringHelperNumeroFormatoBrParaMoedaBrTest extends TestCase
 
     public function testNumeroSemCasaDeMilharComCasaDecimal()
     {
-        $this->assertTrue($this->numeroFormatoBrParaMoedaBr('12345678,00') === '12.345.678,00');
+        $this->assertTrue($this->numeroFormatoBrParaMoedaBr('12345678,02') === '12.345.678,02');
     }
 
     public function testNumeroSemCasaDeMilharSemCasaDecimal()
