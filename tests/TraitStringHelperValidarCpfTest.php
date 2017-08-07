@@ -14,6 +14,13 @@ class TraitStringHelperValidarCpfTest extends TestCase
         $this->assertTrue($this->validarCpf($cpf));
     }
 
+    public function testValidarCpfInvalido()
+    {
+        $cpf = '43354377223';
+
+        $this->assertFalse($this->validarCpf($cpf));
+    }
+
     public function testValidarCpfComMascara()
     {
         $cpf = '433.543.772-24';
