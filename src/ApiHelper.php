@@ -114,7 +114,7 @@ class ApiHelper
      */
     private function requestCurl($url, $method = 'GET', array $data = [])
     {
-        $headerAuth = ($this->tokenValue != '') ? $this->tokenKey . " : " . $this->tokenValue : '';
+        $headerAuth = ($this->tokenValue != '') ? $this->tokenKey . ": " . $this->tokenValue : '';
         $headerPost = ($headerAuth != '') ? self::CONTENT_TYPE_JSON : '';
         $curl = curl_init();
 
