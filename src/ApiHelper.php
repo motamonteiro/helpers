@@ -144,6 +144,7 @@ class ApiHelper
         curl_setopt($curl, CURLOPT_URL, $url);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
 
         $dataCurl = curl_exec($curl);
         $header_code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
