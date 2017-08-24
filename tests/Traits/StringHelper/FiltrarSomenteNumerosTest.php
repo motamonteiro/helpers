@@ -3,7 +3,7 @@
 use MotaMonteiro\Helpers\Traits\StringHelper;
 use PHPUnit\Framework\TestCase;
 
-class TraitStringHelperFiltrarSomenteNumerosTest extends TestCase
+class FiltrarSomenteNumerosTest extends TestCase
 {
     use StringHelper;
 

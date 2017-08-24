@@ -3,7 +3,7 @@
 use MotaMonteiro\Helpers\Traits\DataHelper;
 use PHPUnit\Framework\TestCase;
 
-class TraitDataHelperConverterParaDateTimeTest extends TestCase
+class ConverterParaDateTimeTest extends TestCase
 {
     use DataHelper;
 

@@ -3,7 +3,7 @@
 use MotaMonteiro\Helpers\Traits\StringHelper;
 use PHPUnit\Framework\TestCase;
 
-class TraitStringHelperValidarIeTest extends TestCase
+class ValidarIeTest extends TestCase
 {
     use StringHelper;
 
