@@ -3,7 +3,7 @@
 use MotaMonteiro\Helpers\Traits\StringHelper;
 use PHPUnit\Framework\TestCase;
 
-class TraitStringHelperAtribuirValorArrayTest extends TestCase
+class AtribuirValorArrayTest extends TestCase
 {
     use StringHelper;
 

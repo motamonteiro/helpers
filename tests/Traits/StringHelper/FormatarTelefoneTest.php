@@ -3,7 +3,7 @@
 use MotaMonteiro\Helpers\Traits\StringHelper;
 use PHPUnit\Framework\TestCase;
 
-class TraitStringHelperFormatarTelefoneTest extends TestCase
+class FormatarTelefoneTest extends TestCase
 {
     use StringHelper;
 

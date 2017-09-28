@@ -3,7 +3,7 @@
 use MotaMonteiro\Helpers\Traits\StringHelper;
 use PHPUnit\Framework\TestCase;
 
-class TraitStringHelperChecarValorArrayMultidimensionalTest extends TestCase
+class ChecarValorArrayMultidimensionalTest extends TestCase
 {
     use StringHelper;
 
