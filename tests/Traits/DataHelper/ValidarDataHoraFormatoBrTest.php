@@ -3,7 +3,7 @@
 use MotaMonteiro\Helpers\Traits\DataHelper;
 use PHPUnit\Framework\TestCase;
 
-class TraitDataHelperValidarDataHoraFormatoBrTest extends TestCase
+class ValidarDataHoraFormatoBrTest extends TestCase
 {
     use DataHelper;
 

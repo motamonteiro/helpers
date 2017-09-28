@@ -3,7 +3,7 @@
 use MotaMonteiro\Helpers\Traits\StringHelper;
 use PHPUnit\Framework\TestCase;
 
-class TraitStringHelperImprimirSrcImagemTest extends TestCase
+class ImprimirSrcImagemTest extends TestCase
 {
     use StringHelper;
 

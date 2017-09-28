@@ -3,27 +3,27 @@
 use MotaMonteiro\Helpers\Traits\StringHelper;
 use PHPUnit\Framework\TestCase;
 
-class TraitStringHelperFormatarPlacaTest extends TestCase
+class FormatarCpfTest extends TestCase
 {
     use StringHelper;
 
     public function testFormatarValorSucesso()
     {
-        $this->assertEquals($this->formatarPlaca('ABC0123'), 'ABC-0123');
+        $this->assertEquals($this->formatarCpf('01234567890'), '012.345.678-90');
     }
 
     public function testFormatarTamanhoValorMenorQueTamanhoFormato()
     {
-        $this->assertEquals($this->formatarPlaca('ABC012'), 'ABC-012#');
+        $this->assertEquals($this->formatarCpf('012345678'), '012.345.678-##');
     }
 
     public function testFormatarTamanhoValorMaiorQueTamanhoFormato()
     {
-        $this->assertEquals($this->formatarPlaca('ABC0123456'), 'ABC-0123');
+        $this->assertEquals($this->formatarCpf('01234567890123'), '012.345.678-90');
     }
 
     public function testFormatarValorVazio()
     {
-        $this->assertEquals($this->formatarPlaca(''), '###-####');
+        $this->assertEquals($this->formatarCpf(''), '###.###.###-##');
     }
 }

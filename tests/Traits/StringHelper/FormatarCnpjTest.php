@@ -3,7 +3,7 @@
 use MotaMonteiro\Helpers\Traits\StringHelper;
 use PHPUnit\Framework\TestCase;
 
-class TraitStringHelperFormatarCnpjTest extends TestCase
+class FormatarCnpjTest extends TestCase
 {
     use StringHelper;
 

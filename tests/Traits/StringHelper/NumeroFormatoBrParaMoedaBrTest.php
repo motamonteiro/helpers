@@ -3,7 +3,7 @@
 use MotaMonteiro\Helpers\Traits\StringHelper;
 use PHPUnit\Framework\TestCase;
 
-class TraitStringHelperNumeroFormatoBrParaMoedaBrTest extends TestCase
+class NumeroFormatoBrParaMoedaBrTest extends TestCase
 {
     use StringHelper;
 
