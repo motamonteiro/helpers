@@ -133,6 +133,13 @@ class ApiHelper
                     curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
                 }
                 break;
+            case "DELETE":
+                curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "DELETE");
+                curl_setopt($curl, CURLOPT_HTTPHEADER, array($headerAuth, $headerPost));
+                if ($data) {
+                    curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
+                }
+                break;
             default:
                 curl_setopt($curl, CURLOPT_HTTPHEADER, array($headerPost, $headerAuth));
                 if ($data) {
