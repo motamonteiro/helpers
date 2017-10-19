@@ -2,11 +2,11 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-$api = new \MotaMonteiro\Helpers\ApiHelper('http://localhost:8000/api/', 'Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9.TJVA95OrM7E2cBab30RMHrHDcEfxjoYZgeFONFh7HgQ');
+$api = new \MotaMonteiro\Helpers\ApiHelper('https://jsonplaceholder.typicode.com');
 
 $data = ['login' => 'test_user', 'mail' => 'test@test.com', 'password' => 'secret'];
 
-$resposta = $api->request('user', 'POST', $data);
+$resposta = $api->request('/posts', 'POST', $data);
 
 if ($api->existsRequestError()) {
 

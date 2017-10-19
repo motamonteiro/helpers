@@ -115,33 +115,32 @@ class ApiHelper
     private function requestCurl($url, $method = 'GET', array $data = [])
     {
         $headerAuth = ($this->tokenValue != '') ? $this->tokenKey . ": " . $this->tokenValue : '';
-        $headerPost = ($headerAuth != '') ? self::CONTENT_TYPE_JSON : '';
         $curl = curl_init();
 
         switch ($method) {
             case "POST":
                 curl_setopt($curl, CURLOPT_POST, 1);
-                curl_setopt($curl, CURLOPT_HTTPHEADER, array($headerAuth, $headerPost));
+                curl_setopt($curl, CURLOPT_HTTPHEADER, array($headerAuth, self::CONTENT_TYPE_JSON));
                 if ($data) {
                     curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
                 }
                 break;
             case "PUT":
                 curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "PUT");
-                curl_setopt($curl, CURLOPT_HTTPHEADER, array($headerAuth, $headerPost));
+                curl_setopt($curl, CURLOPT_HTTPHEADER, array($headerAuth, self::CONTENT_TYPE_JSON));
                 if ($data) {
                     curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
                 }
                 break;
             case "DELETE":
                 curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "DELETE");
-                curl_setopt($curl, CURLOPT_HTTPHEADER, array($headerAuth, $headerPost));
+                curl_setopt($curl, CURLOPT_HTTPHEADER, array($headerAuth, self::CONTENT_TYPE_JSON));
                 if ($data) {
                     curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
                 }
                 break;
             default:
-                curl_setopt($curl, CURLOPT_HTTPHEADER, array($headerPost, $headerAuth));
+                curl_setopt($curl, CURLOPT_HTTPHEADER, array(self::CONTENT_TYPE_JSON, $headerAuth));
                 if ($data) {
                     $url = sprintf("%s?%s", $url, http_build_query($data));
                 }
