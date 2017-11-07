@@ -120,17 +120,27 @@ class ApiHelper
         switch ($method) {
             case "POST":
                 curl_setopt($curl, CURLOPT_POST, 1);
-                curl_setopt($curl, CURLOPT_HTTPHEADER, array($headerAuth, self::CONTENT_TYPE_JSON));
-                if ($data) {
-                    curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
+                if ($this->existsFile($data)) {
+                    $this->setCurlFile($data, $curl, $headerAuth);
+                } else {
+                    curl_setopt($curl, CURLOPT_HTTPHEADER, array($headerAuth, self::CONTENT_TYPE_JSON));
+                    if ($data) {
+                        curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
+                    }
                 }
+
                 break;
             case "PUT":
                 curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "PUT");
-                curl_setopt($curl, CURLOPT_HTTPHEADER, array($headerAuth, self::CONTENT_TYPE_JSON));
-                if ($data) {
-                    curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
+                if ($this->existsFile($data)) {
+                    $this->setCurlFile($data, $curl, $headerAuth);
+                } else {
+                    curl_setopt($curl, CURLOPT_HTTPHEADER, array($headerAuth, self::CONTENT_TYPE_JSON));
+                    if ($data) {
+                        curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
+                    }
                 }
+
                 break;
             case "DELETE":
                 curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "DELETE");
@@ -163,6 +173,41 @@ class ApiHelper
         }
 
         return [self::HEADER_CODE => $header_code, self::JSON => $json];
+    }
+
+    /**
+     * @param array $data
+     * @return bool
+     */
+    private function existsFile(array $data)
+    {
+        foreach ($data as $dado => $valor) {
+            if (substr($dado, 0, 3) == 'blb') {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @param array $data
+     * @param $curl
+     * @param $headerAuth
+     * @return bool
+     */
+    private function setCurlFile(array $data, $curl, $headerAuth)
+    {
+        foreach ($data as $dado => $valor) {
+            if (substr($dado, 0, 3) == 'blb') {
+                $data[$dado] = new \CURLFile($data[$dado]->getPathname());
+            }
+        }
+
+        curl_setopt($curl, CURLOPT_VERBOSE, 1);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, array($headerAuth));
+
+        return true;
     }
 
     /**
