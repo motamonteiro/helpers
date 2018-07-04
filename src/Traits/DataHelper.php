@@ -66,6 +66,35 @@ trait DataHelper
     }
 
     /**
+     * Converter uma data identificando o formato origem para o formato destino informado.
+     *
+     * @param \DateTime|string $data
+     * @return false|string
+     */
+    public function dataFormatoDestino($data, $formatoDestino)
+    {
+        $dataFormatada = false;
+
+        if (!$dataFormatada && $this->validarDataPorFormato($data, $this->FORMATO_DATA_SQL)) {
+            $dataFormatada = $this->dataFormatoOrigemDestino($data, $this->FORMATO_DATA_SQL, $formatoDestino);
+        }
+
+        if (!$dataFormatada && $this->validarDataPorFormato($data, $this->FORMATO_DATA_HORA_SQL)) {
+            $dataFormatada = $this->dataFormatoOrigemDestino($data, $this->FORMATO_DATA_HORA_SQL, $formatoDestino);
+        }
+
+        if (!$dataFormatada && $this->validarDataPorFormato($data, $this->FORMATO_DATA_BR)) {
+            $dataFormatada = $this->dataFormatoOrigemDestino($data, $this->FORMATO_DATA_BR, $formatoDestino);
+        }
+
+        if (!$dataFormatada && $this->validarDataPorFormato($data, $this->FORMATO_DATA_HORA_BR)) {
+            $dataFormatada = $this->dataFormatoOrigemDestino($data, $this->FORMATO_DATA_HORA_BR, $formatoDestino);
+        }
+
+        return $dataFormatada;
+    }
+
+    /**
      * Converter uma data de um formato origem para um formato destino.
      *
      * @param \DateTime|string $data
