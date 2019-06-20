@@ -38,7 +38,7 @@ trait StringHelper
     {
         $cpf = $this->filtrarSomenteNumeros($cpf);
 
-        // Remove os CPFs 00000000000, 11111111111, ..., 99999999999
+        // Valida tamanho e caracteres repetidos 00000000000, 11111111111, ..., 99999999999
         if ((strlen($cpf) != 11) || (preg_match('/(\d)\1{10}/', $cpf))) {
             return false;
         }
@@ -68,7 +68,7 @@ trait StringHelper
     {
         $cnpj = $this->filtrarSomenteNumeros($cnpj);
 
-        // Remove os CNPJs 00000000000000, 11111111111111, ..., 99999999999999
+        // Valida tamanho e caracteres repetidos 00000000000000, 11111111111111, ..., 99999999999999
         if ((strlen($cnpj) != 14) || (preg_match('/(\d)\1{13}/', $cnpj))) {
             return false;
         }
@@ -110,16 +110,9 @@ trait StringHelper
         //Retira possível mascara
         $inscricaoEstadual = $this->filtrarSomenteNumeros($inscricaoEstadual);
 
-        //Valida tamanho
-        if (strlen($inscricaoEstadual) != 9) {
+        // Valida tamanho e caracteres repetidos 000000000, 111111111, ..., 999999999
+        if ((strlen($inscricaoEstadual) != 9) || (preg_match('/(\d)\1{8}/', $inscricaoEstadual))) {
             return false;
-        }
-
-        //Valida números iguais
-        for ($i = 0; $i <= 10; $i++) {
-            if ($inscricaoEstadual == str_repeat($i, 9)) {
-                return false;
-            }
         }
 
         return true;
@@ -133,7 +126,13 @@ trait StringHelper
      */
     public function numeroFormatoBrParaSql($numero)
     {
+        //Retira espaços
+        $numero = trim($numero);
+
+        //Retira separador de milhar com o ponto
         $numero = str_replace(".", "", $numero);
+
+        //Substitui separador de decimal de virgula para ponto
         $numero = str_replace(",", ".", $numero);
 
         if (!is_numeric($numero)) {
@@ -156,6 +155,7 @@ trait StringHelper
 
         //Retira separador de milhar com a virgula
         $numero = str_replace(",", "", $numero);
+
         if (!is_numeric($numero)) {
             return false;
         }

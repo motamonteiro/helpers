@@ -3,7 +3,7 @@
 use MotaMonteiro\Helpers\Traits\StringHelper;
 use PHPUnit\Framework\TestCase;
 
-class TraitStringHelperValidarCnpjTest extends TestCase
+class ValidarCnpjTest extends TestCase
 {
     use StringHelper;
 
@@ -12,6 +12,13 @@ class TraitStringHelperValidarCnpjTest extends TestCase
         $cnpj = '74456225000193';
 
         $this->assertTrue($this->validarCnpj($cnpj));
+    }
+
+    public function testValidarCnpjInvalido()
+    {
+        $cnpj = '14456225000193';
+
+        $this->assertFalse($this->validarCnpj($cnpj));
     }
 
     public function testValidarCnpjComMascara()

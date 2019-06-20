@@ -3,7 +3,7 @@
 use MotaMonteiro\Helpers\Traits\StringHelper;
 use PHPUnit\Framework\TestCase;
 
-class TraitStringHelperValidarCpfTest extends TestCase
+class ValidarCpfTest extends TestCase
 {
     use StringHelper;
 
@@ -12,6 +12,13 @@ class TraitStringHelperValidarCpfTest extends TestCase
         $cpf = '43354377224';
 
         $this->assertTrue($this->validarCpf($cpf));
+    }
+
+    public function testValidarCpfInvalido()
+    {
+        $cpf = '43354377223';
+
+        $this->assertFalse($this->validarCpf($cpf));
     }
 
     public function testValidarCpfComMascara()

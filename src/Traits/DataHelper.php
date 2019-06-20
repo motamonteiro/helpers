@@ -7,8 +7,25 @@ trait DataHelper
 {
     public $FORMATO_DATA_BR = 'd/m/Y';
     public $FORMATO_DATA_HORA_BR = 'd/m/Y H:i:s';
+    public $FORMATO_DATA_SQL = 'Y-m-d';
     public $FORMATO_DATA_HORA_SQL = 'Y-m-d H:i:s';
-    public $DATA_HORA_SQL_SEM_FORMATO = 'YmdHis';
+    public $FORMATO_Ymd = 'Ymd';
+    public $FORMATO_YmdHis = 'YmdHis';
+
+    /**
+     * @param \DateTime|string $data
+     * @param $formato
+     * @return bool|\DateTime
+     */
+    public function converterParaDateTime($data, $formato)
+    {
+        $data = (!$data instanceof \DateTime) ? \DateTime::createFromFormat($formato, $data) : $data;
+        $errors = \DateTime::getLastErrors();
+        if (!empty($errors['warning_count'])) {
+            return false;
+        }
+        return $data;
+    }
 
     /**
      * Validar se uma data no formato 'd/m/Y' é válida ou nao.
@@ -36,15 +53,45 @@ trait DataHelper
      * Validar se uma data no formato informado é válida ou nao.
      *
      * @param \DateTime|string $data
+     * @param string $formato
      * @return bool
      */
     public function validarDataPorFormato($data, $formato)
     {
-        $data = (!$data instanceof \DateTime) ? \DateTime::createFromFormat($formato, $data) : $data;
-        if(!$data){
+        $data = $this->converterParaDateTime($data, $formato);
+        if (!$data) {
             return false;
         }
-        return ($data->format($formato));
+        return boolval($data->format($formato));
+    }
+
+    /**
+     * Converter uma data identificando o formato origem para o formato destino informado.
+     *
+     * @param \DateTime|string $data
+     * @return false|string
+     */
+    public function dataFormatoDestino($data, $formatoDestino)
+    {
+        $dataFormatada = false;
+
+        if (!$dataFormatada && $this->validarDataPorFormato($data, $this->FORMATO_DATA_SQL)) {
+            $dataFormatada = $this->dataFormatoOrigemDestino($data, $this->FORMATO_DATA_SQL, $formatoDestino);
+        }
+
+        if (!$dataFormatada && $this->validarDataPorFormato($data, $this->FORMATO_DATA_HORA_SQL)) {
+            $dataFormatada = $this->dataFormatoOrigemDestino($data, $this->FORMATO_DATA_HORA_SQL, $formatoDestino);
+        }
+
+        if (!$dataFormatada && $this->validarDataPorFormato($data, $this->FORMATO_DATA_BR)) {
+            $dataFormatada = $this->dataFormatoOrigemDestino($data, $this->FORMATO_DATA_BR, $formatoDestino);
+        }
+
+        if (!$dataFormatada && $this->validarDataPorFormato($data, $this->FORMATO_DATA_HORA_BR)) {
+            $dataFormatada = $this->dataFormatoOrigemDestino($data, $this->FORMATO_DATA_HORA_BR, $formatoDestino);
+        }
+
+        return $dataFormatada;
     }
 
     /**
@@ -57,10 +104,11 @@ trait DataHelper
      */
     public function dataFormatoOrigemDestino($data, $formatoOrigem, $formatoDestino)
     {
-        $data = (!$data instanceof \DateTime) ? \DateTime::createFromFormat($formatoOrigem, $data) : $data;
-        if(!$data){
+        $data = $this->converterParaDateTime($data, $formatoOrigem);
+        if (!$data) {
             return false;
         }
+
         return ($data->format($formatoDestino));
     }
 
@@ -75,11 +123,11 @@ trait DataHelper
         if (gettype($data) == 'string') {
             $pos = strpos($data, '-');
             if ($pos === false) {
-                return $this->dataFormatoOrigemDestino($data, 'Ymd', $this->FORMATO_DATA_BR);
+                return $this->dataFormatoOrigemDestino($data, $this->FORMATO_Ymd, $this->FORMATO_DATA_BR);
             }
         }
 
-        return $this->dataFormatoOrigemDestino($data, 'Y-m-d', $this->FORMATO_DATA_BR);
+        return $this->dataFormatoOrigemDestino($data, $this->FORMATO_DATA_SQL, $this->FORMATO_DATA_BR);
     }
 
     /**
@@ -93,7 +141,7 @@ trait DataHelper
         if (gettype($data) == 'string') {
             $pos = strpos($data, '-');
             if ($pos === false) {
-                return $this->dataFormatoOrigemDestino($data, $this->DATA_HORA_SQL_SEM_FORMATO, $this->FORMATO_DATA_HORA_BR);
+                return $this->dataFormatoOrigemDestino($data, $this->FORMATO_YmdHis, $this->FORMATO_DATA_HORA_BR);
             }
         }
 
@@ -108,7 +156,7 @@ trait DataHelper
      */
     public function dataFormatoBrParaSql($data)
     {
-        return $this->dataFormatoOrigemDestino($data, $this->FORMATO_DATA_BR, 'Y-m-d');
+        return $this->dataFormatoOrigemDestino($data, $this->FORMATO_DATA_BR, $this->FORMATO_DATA_SQL);
     }
 
     /**
@@ -131,11 +179,10 @@ trait DataHelper
      */
     public function intervaloEntreDatasBr($data1, $data2)
     {
+        $data1 = $this->converterParaDateTime($data1, $this->FORMATO_DATA_BR);
+        $data2 = $this->converterParaDateTime($data2, $this->FORMATO_DATA_BR);
 
-        $data1 = (!$data1 instanceof \DateTime) ? \DateTime::createFromFormat($this->FORMATO_DATA_BR, $data1) : $data1;
-        $data2 = (!$data2 instanceof \DateTime) ? \DateTime::createFromFormat($this->FORMATO_DATA_BR, $data2) : $data2;
-
-        if ((!$data1) || (!$data2)) {
+        if (!$data1 || !$data2) {
             return false;
         }
 
@@ -151,11 +198,10 @@ trait DataHelper
      */
     public function intervaloEntreDatasHoraBr($data1, $data2)
     {
+        $data1 = $this->converterParaDateTime($data1, $this->FORMATO_DATA_HORA_BR);
+        $data2 = $this->converterParaDateTime($data2, $this->FORMATO_DATA_HORA_BR);
 
-        $data1 = (!$data1 instanceof \DateTime) ? \DateTime::createFromFormat($this->FORMATO_DATA_HORA_BR, $data1) : $data1;
-        $data2 = (!$data2 instanceof \DateTime) ? \DateTime::createFromFormat($this->FORMATO_DATA_HORA_BR, $data2) : $data2;
-
-        if ((!$data1) || (!$data2)) {
+        if (!$data1 || !$data2) {
             return false;
         }
 
@@ -176,10 +222,9 @@ trait DataHelper
      */
     public function somarDataFormatoBr($data, $dias=0, $meses=0, $anos=0, $horas=0, $mins=0, $segs=0)
     {
+        $data = $this->converterParaDateTime($data, $this->FORMATO_DATA_BR);
 
-        $data = (!$data instanceof \DateTime) ? \DateTime::createFromFormat($this->FORMATO_DATA_BR, $data) : $data;
-
-        if (!$data || !$data->format($this->FORMATO_DATA_BR)){
+        if (!$data){
             return '01/01/1900';
         }
 
@@ -201,10 +246,9 @@ trait DataHelper
      */
     public function somarDataHoraFormatoBr($data, $dias=0, $meses=0, $anos=0, $horas=0, $mins=0, $segs=0)
     {
+        $data = $this->converterParaDateTime($data, $this->FORMATO_DATA_HORA_BR);
 
-        $data = (!$data instanceof \DateTime) ? \DateTime::createFromFormat($this->FORMATO_DATA_HORA_BR, $data) : $data;
-
-        if (!$data || !$data->format($this->FORMATO_DATA_HORA_BR)) {
+        if (!$data){
             return '01/01/1900 00:00:00';
         }
 
@@ -233,16 +277,14 @@ trait DataHelper
      */
     public function compararDataFormatoBr($data1, $simbolo, $data2)
     {
+        $data1 = $this->converterParaDateTime($data1, $this->FORMATO_DATA_BR);
+        $data2 = $this->converterParaDateTime($data2, $this->FORMATO_DATA_BR);
 
-        $data1 = (!$data1 instanceof \DateTime) ? \DateTime::createFromFormat($this->FORMATO_DATA_BR, $data1) : $data1;
-        $data2 = (!$data2 instanceof \DateTime) ? \DateTime::createFromFormat($this->FORMATO_DATA_BR, $data2) : $data2;
-
-        if ((!$data1) || (!$data2)) {
+        if (!$data1 || !$data2) {
             return false;
         }
 
         return $this->compararDatasFormatado($data1, $simbolo, $data2);
-
     }
 
     /**
@@ -255,19 +297,14 @@ trait DataHelper
      */
     public function compararDataHoraFormatoBr($data1, $simbolo, $data2)
     {
+        $data1 = $this->converterParaDateTime($data1, $this->FORMATO_DATA_HORA_BR);
+        $data2 = $this->converterParaDateTime($data2, $this->FORMATO_DATA_HORA_BR);
 
-        $data1 = (!$data1 instanceof \DateTime) ? \DateTime::createFromFormat($this->FORMATO_DATA_HORA_BR, $data1) : $data1;
-        $data2 = (!$data2 instanceof \DateTime) ? \DateTime::createFromFormat($this->FORMATO_DATA_HORA_BR, $data2) : $data2;
-
-        if ((!$data1) || (!$data2)) {
+        if (!$data1 || !$data2) {
             return false;
         }
 
-        $data1 = $data1->format($this->DATA_HORA_SQL_SEM_FORMATO);
-        $data2 = $data2->format($this->DATA_HORA_SQL_SEM_FORMATO);
-
         return $this->compararDatasFormatado($data1, $simbolo, $data2);
-
     }
 
     /**

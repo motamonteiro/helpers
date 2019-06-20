@@ -2,15 +2,15 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-$api = new \MotaMonteiro\Helpers\ApiHelper();
-$api->setTokenKey('PORTAL_TOKEN_DEV');
-$data = ['nme_email' => 'test@test.com', 'nme_senha' => 'secret'];
+$api = new \MotaMonteiro\Helpers\ApiHelper('https://jsonplaceholder.typicode.com');
 
-$resposta = $api->request('http://localhost:8001/api/login', 'POST', $data, 'f9deab02e02646e698ac6026c7429ac4');
+$data = ['login' => 'test_user', 'mail' => 'test@test.com', 'password' => 'secret'];
+
+$resposta = $api->request('/posts', 'POST', $data);
 
 if ($api->existsRequestError()) {
-    $error = $api->getRequestErrorArray();
 
+    $error = $api->getRequestErrorArray();
     if ($error['status_code'] == 500) {
         echo 'send  mail to server responsable<br>';
     } else {

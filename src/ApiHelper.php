@@ -18,6 +18,10 @@ class ApiHelper
      */
     private $tokenKey;
     /**
+     * @var string
+     */
+    private $tokenValue;
+    /**
      * @var ErrorHelper
      */
     private $errorHelper;
@@ -26,11 +30,13 @@ class ApiHelper
      * ApiHelper constructor.
      * @param string $baseUrl
      * @param string $tokenKey
+     * @param string $tokenValue
      */
-    public function __construct($baseUrl = '', $tokenKey = '')
+    public function __construct($baseUrl = '', $tokenKey = '', $tokenValue = '')
     {
         $this->baseUrl = $baseUrl;
         $this->tokenKey = $tokenKey;
+        $this->tokenValue = $tokenValue;
         $this->errorHelper = new ErrorHelper();
     }
 
@@ -67,15 +73,31 @@ class ApiHelper
     }
 
     /**
+     * @return string
+     */
+    public function getTokenValue(): string
+    {
+        return $this->tokenValue;
+    }
+
+    /**
+     * @param string $tokenValue
+     */
+    public function setTokenValue(string $tokenValue)
+    {
+        $this->tokenValue = $tokenValue;
+    }
+
+    /**
      * @param $url
      * @param string $method
      * @param array $data
-     * @param string $tokenValue
-     * @return ErrorHelper|array
+     * @return array|ErrorHelper
      */
-    public function request($url, $method = 'GET', array $data = [], $tokenValue = '')
+    public function request($url, $method = 'GET', array $data = [])
     {
-        $response = $this->requestCurl($url, $method, $data, $tokenValue);
+        $url = ($this->baseUrl != '') ? $this->baseUrl . $url : $url;
+        $response = $this->requestCurl($url, $method, $data);
 
         if ($this->existsRequestError()) {
             return $this->errorHelper;
@@ -88,32 +110,47 @@ class ApiHelper
      * @param $url
      * @param string $method
      * @param array $data
-     * @param string $tokenValue
      * @return array|ErrorHelper
      */
-    private function requestCurl($url, $method = 'GET', array $data = [], $tokenValue = '')
+    private function requestCurl($url, $method = 'GET', array $data = [])
     {
-        $headerAuth = ($tokenValue != '') ? $this->tokenKey . " : " . $tokenValue : '';
-        $headerPost = ($headerAuth != '') ? self::CONTENT_TYPE_JSON : '';
+        $headerAuth = ($this->tokenValue != '') ? $this->tokenKey . ": " . $this->tokenValue : '';
         $curl = curl_init();
 
         switch ($method) {
             case "POST":
                 curl_setopt($curl, CURLOPT_POST, 1);
-                curl_setopt($curl, CURLOPT_HTTPHEADER, array($headerAuth, $headerPost));
-                if ($data) {
-                    curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
+                if ($this->existsFile($data)) {
+                    $this->setCurlFile($data, $curl, $headerAuth);
+                } else {
+                    curl_setopt($curl, CURLOPT_HTTPHEADER, array($headerAuth, self::CONTENT_TYPE_JSON));
+                    if ($data) {
+                        curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
+                    }
                 }
+
                 break;
             case "PUT":
                 curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "PUT");
-                curl_setopt($curl, CURLOPT_HTTPHEADER, array($headerAuth, $headerPost));
+                if ($this->existsFile($data)) {
+                    $this->setCurlFile($data, $curl, $headerAuth);
+                } else {
+                    curl_setopt($curl, CURLOPT_HTTPHEADER, array($headerAuth, self::CONTENT_TYPE_JSON));
+                    if ($data) {
+                        curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
+                    }
+                }
+
+                break;
+            case "DELETE":
+                curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "DELETE");
+                curl_setopt($curl, CURLOPT_HTTPHEADER, array($headerAuth, self::CONTENT_TYPE_JSON));
                 if ($data) {
                     curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
                 }
                 break;
             default:
-                curl_setopt($curl, CURLOPT_HTTPHEADER, array($headerPost, $headerAuth));
+                curl_setopt($curl, CURLOPT_HTTPHEADER, array(self::CONTENT_TYPE_JSON, $headerAuth));
                 if ($data) {
                     $url = sprintf("%s?%s", $url, http_build_query($data));
                 }
@@ -123,6 +160,7 @@ class ApiHelper
         curl_setopt($curl, CURLOPT_URL, $url);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
 
         $dataCurl = curl_exec($curl);
         $header_code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
@@ -135,6 +173,41 @@ class ApiHelper
         }
 
         return [self::HEADER_CODE => $header_code, self::JSON => $json];
+    }
+
+    /**
+     * @param array $data
+     * @return bool
+     */
+    private function existsFile(array $data)
+    {
+        foreach ($data as $dado => $valor) {
+            if (substr($dado, 0, 3) == 'blb') {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @param array $data
+     * @param $curl
+     * @param $headerAuth
+     * @return bool
+     */
+    private function setCurlFile(array $data, $curl, $headerAuth)
+    {
+        foreach ($data as $dado => $valor) {
+            if (substr($dado, 0, 3) == 'blb') {
+                $data[$dado] = new \CURLFile($data[$dado]->getPathname());
+            }
+        }
+
+        curl_setopt($curl, CURLOPT_VERBOSE, 1);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, array($headerAuth));
+
+        return true;
     }
 
     /**
