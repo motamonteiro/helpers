@@ -47,10 +47,10 @@ trait StringHelper
         for ($i = 9; $i < 11; $i++) {
             $j = 0;
             for ($k = 0; $k < $i; $k++) {
-                $j += $cpf{$k} * (($i + 1) - $k);
+                $j += $cpf[$k] * (($i + 1) - $k);
             }
             $j = ((10 * $j) % 11) % 10;
-            if ($cpf{$k} != $j) {
+            if ($cpf[$k] != $j) {
                 return false;
             }
         }
@@ -77,12 +77,12 @@ trait StringHelper
         $soma = 0;
         $j = 5;
         for ($i = 0; $i < 12; $i++) {
-            $soma += $cnpj{$i} * $j;
+            $soma += $cnpj[$i] * $j;
             $j = ($j == 2) ? 9 : $j - 1;
         }
 
         $resto = $soma % 11;
-        if ($cnpj{12} != ($resto < 2 ? 0 : 11 - $resto)) {
+        if ($cnpj[12] != ($resto < 2 ? 0 : 11 - $resto)) {
             return false;
         }
 
@@ -90,13 +90,13 @@ trait StringHelper
         $soma = 0;
         $j = 6;
         for ($i = 0; $i < 13; $i++) {
-            $soma += $cnpj{$i} * $j;
+            $soma += $cnpj[$i] * $j;
             $j = ($j == 2) ? 9 : $j - 1;
         }
 
         $resto = $soma % 11;
 
-        return $cnpj{13} == ($resto < 2 ? 0 : 11 - $resto);
+        return $cnpj[13] == ($resto < 2 ? 0 : 11 - $resto);
     }
 
     /**
